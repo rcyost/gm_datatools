@@ -8,8 +8,11 @@ Greenmantle's systematic macro python library.
 [py lib instructions used](https://medium.com/analytics-vidhya/how-to-create-a-python-library-7d5aea80cc3f)
 
 
-How to install:
+### How to install:
+1. `pip install git+https://github.com/rcyost/gm_datatools.git`
 
-1. git clone 
-2. open command terminal, navigate to synced distribution folder
-3. enter `pip install dist\gm_datatools-0.1.0-py3-none-any.whl`
+### TO DO:
+1.
+
+
+### Overview:
