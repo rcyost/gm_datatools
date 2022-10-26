@@ -2,6 +2,8 @@ import pandas as pd
 
 from gm_datatools import gm_fred
 
+import gm_bls
+
 # download data into folder
 high_level=[
     10000000, 20000000,
