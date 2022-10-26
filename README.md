@@ -11,6 +11,12 @@ Greenmantle's systematic macro python library.
 ### How to install:
 1. `pip install git+https://github.com/rcyost/gm_datatools.git`
 
+### To update:
+1. `pip uninstall gm_datatools`
+2. `pip install git+https://github.com/rcyost/gm_datatools.git`
+
+
+
 ### TO DO:
 1.
 
