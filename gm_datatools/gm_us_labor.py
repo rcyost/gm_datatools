@@ -2,7 +2,7 @@ import pandas as pd
 
 from gm_datatools import gm_fred
 
-from .gm_bls import *
+from .gm_bls import download_survey_data, download_metadata
 
 # download data into folder
 high_level=[
@@ -108,9 +108,9 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
         tuple[pd.DataFrame, pd.DataFrame]: ce_data, and ce_series
     """
 
-    ce_series= download_metadata('ce', ['series'])
+    ce_series= download_metadata('ce', 'series')
 
-    indy_series= (ce_series['series']
+    indy_series= (ce_series
         # we only want the highlest level of each sector
         .query('industry_code.isin(@high_level)')
         # non-industry based sectors (goods, services)
@@ -125,7 +125,7 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     indy_series['series_id']= indy_series['series_id'].str.strip()
 
 
-    ce_all_data= get_data(table_name= r'ce\data\0.AllCESSeries.csv')
+    ce_all_data= download_survey_data('ce', '0.AllCESSeries')
 
     indy_data= (ce_all_data
             .query('series_id.isin(@indy_series["series_id"])')
@@ -141,6 +141,11 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
         right_on= 'series_id',
     )
 
+    indy_data['period']= indy_data.period.str[1:]
+    indy_data['date']= indy_data.period +'-'+ indy_data.year.astype(str)
+    indy_data= indy_data[indy_data['period'] != '13']
+    indy_data['date']= pd.to_datetime(indy_data['date'])
+
     indy_data= ((indy_data
         .pivot_table(
             index= ['date', 'industry_code', 'seasonal'],
@@ -148,6 +153,7 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
             values= 'value'))
     )
 
+    # return ce_series
     return indy_data, indy_series
 
 

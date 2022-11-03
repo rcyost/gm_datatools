@@ -13,20 +13,14 @@ from io import BytesIO
 import pathlib
 current_path= pathlib.Path(__file__).parent.resolve()
 
-def download_metadata(database: str, list_metadata_urls:list[str]):
+def download_metadata(database: str, meta:str):
 
-    meta_dict= {}
+    metadata_url= f'https://download.bls.gov/pub/time.series/{database}/{database}.{meta}'
+    r = requests.get(metadata_url)
+    df= pd.read_csv(BytesIO(r.content), sep="\t")
+    df.columns= [col.strip() for col in df.columns]
 
-    for meta in list_metadata_urls:
-
-        metadata_url= f'https://download.bls.gov/pub/time.series/{database}/{database}.{meta}'
-        r = requests.get(metadata_url)
-        df= pd.read_csv(BytesIO(r.content), sep="\t")
-        df.columns= [col.strip() for col in df.columns]
-
-        meta_dict[meta]= df
-
-    return meta_dict
+    return df
 
 def download_survey_data(database: str, survey:str):
 
