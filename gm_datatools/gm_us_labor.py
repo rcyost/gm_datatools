@@ -164,11 +164,13 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
 
 def calculate_wage_bill(indy_data:pd.DataFrame) -> pd.DataFrame:
 
-    # all employees wage bill
+    # 57 - AGGREGATE WEEKLY PAYROLLS OF ALL EMPLOYEES, THOUSANDS
     indy_data['all_emp_wage_bill']= indy_data[57] * 52
-    indy_data['product_nonsup_wage_bill']= indy_data[82] * 52
-    indy_data['nonproduct_sup_wage_bill']= indy_data['all_emp_wage_bill'] - indy_data['product_nonsup_wage_bill']
 
+    # 82 - AGGREGATE WEEKLY PAYROLLS OF PRODUCTION AND NONSUPERVISORY EMPLOYEES, THOUSANDS
+    indy_data['product_nonsup_wage_bill']= indy_data[82] * 52
+
+    indy_data['nonproduct_sup_wage_bill']= indy_data['all_emp_wage_bill'] - indy_data['product_nonsup_wage_bill']
     return indy_data
 
 def all_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
@@ -223,6 +225,39 @@ def calculate_real_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
     real_wages_all= real_wages.drop('cpi_head_yoy', axis=1)
 
     return real_wages, real_wages_all
+
+def twb_avg_weekly_num_emp(ce_all_data:pd.DataFrame) -> pd.DataFrame:
+    # CES0500000011 Average weekly earnings of all employees, total private, seasonally adjusted
+    all_emp_earn= ce_all_data.query('series_id=="CES0500000011"')
+
+    #CES0000000001  All employees, thousands, total nonfarm, seasonally adjusted
+    #all_emp_num= ce_all_data.query('series_id=="CES0000000001"')
+
+    #CES0500000001  All employees, thousands, total private, seasonally adjusted
+    all_emp_num= ce_all_data.query('series_id=="CES0500000001"')
+
+    twb= pd.merge(
+        left= all_emp_num,
+        left_on=['year', 'period'],
+        right=all_emp_earn,
+        right_on=['year', 'period'],
+    )
+
+    twb['twb']= twb['value_x'] * twb['value_y'] * 52
+
+    twb= twb[['year', 'period', 'value_x', 'value_y', 'twb']]
+
+    twb= twb.rename({'value_x':'num_employees', 'value_y':'avg_weekly_earn'}, axis=1)
+
+    return twb
+
+def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
+    # CES0500000057    Aggregate weekly payrolls of all employees, thousands, total private, seasonally adjusted
+    twb= ce_all_data.query('series_id=="CES0500000057"')
+    twb['twb']= twb['value'] * 52
+    twb= twb[['year', 'period', 'value', 'twb']]
+    twb= twb.rename({'value':'agg_week_payrolls'}, axis=1)
+    return twb
 
 
 #############################################################
