@@ -249,6 +249,14 @@ def twb_avg_weekly_num_emp(ce_all_data:pd.DataFrame) -> pd.DataFrame:
 
     twb= twb.rename({'value_x':'num_employees', 'value_y':'avg_weekly_earn'}, axis=1)
 
+    twb['period']= twb.period.str[1:]
+    twb['date']= twb.period +'-'+ twb.year.astype(str)
+    twb= twb[twb['period'] != '13']
+    twb['date']= pd.to_datetime(twb['date'])
+
+    twb= twb.drop(['year', 'period'], axis=1)
+    twb= twb.set_index(['date'])
+
     return twb
 
 def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
@@ -257,6 +265,15 @@ def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
     twb['twb']= twb['value'] * 52
     twb= twb[['year', 'period', 'value', 'twb']]
     twb= twb.rename({'value':'agg_week_payrolls'}, axis=1)
+
+    twb['period']= twb.period.str[1:]
+    twb['date']= twb.period +'-'+ twb.year.astype(str)
+    twb= twb[twb['period'] != '13']
+    twb['date']= pd.to_datetime(twb['date'])
+
+    twb= twb.drop(['year', 'period'], axis=1)
+    twb= twb.set_index(['date'])
+
     return twb
 
 
