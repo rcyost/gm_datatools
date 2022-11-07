@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 
 from gm_datatools import gm_fred
 
@@ -27,7 +28,7 @@ indy_rename_dict={
     90000000:'gov'
 }
 
-
+@st.experimental_memo
 def create_wages_dash_data(indy_data:pd.DataFrame):
     all_wages= indy_data[indy_data.index.get_level_values(2) == 'S']
     all_wages= all_wages[['all_emp_wage_bill', 'product_nonsup_wage_bill', 'nonproduct_sup_wage_bill']]
@@ -49,6 +50,7 @@ def create_wages_dash_data(indy_data:pd.DataFrame):
 
     return all_wages, total_wages, total_new_wages
 
+@st.experimental_memo
 def create_jobs_dash_data(indy_data:pd.DataFrame):
     employees= indy_data[indy_data.index.get_level_values(2) == 'S']
     # 1 is the total number of employees
@@ -75,7 +77,7 @@ def create_jobs_dash_data(indy_data:pd.DataFrame):
 
     return employees, employees_mom, employees_yoy, employees_total
 
-
+@st.experimental_memo
 def create_dashboard_data(indy_data: pd.DataFrame) -> None:
 
     # total, indy; wages
@@ -84,6 +86,7 @@ def create_dashboard_data(indy_data: pd.DataFrame) -> None:
     # total, indy; jobs, new jobs
     create_jobs_dash_data(indy_data)
 
+@st.experimental_memo
 def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     """download all needed data for the us labor market
 
@@ -162,6 +165,7 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
 ###      WAGES
 #############################################################
 
+@st.experimental_memo
 def calculate_wage_bill(indy_data:pd.DataFrame) -> pd.DataFrame:
 
     # 57 - AGGREGATE WEEKLY PAYROLLS OF ALL EMPLOYEES, THOUSANDS
@@ -173,6 +177,7 @@ def calculate_wage_bill(indy_data:pd.DataFrame) -> pd.DataFrame:
     indy_data['nonproduct_sup_wage_bill']= indy_data['all_emp_wage_bill'] - indy_data['product_nonsup_wage_bill']
     return indy_data
 
+@st.experimental_memo
 def all_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
 
     all_wages= wage_bill[wage_bill.index.get_level_values(2) == 'S']
@@ -193,12 +198,14 @@ def all_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
 
     return all_wages
 
+@st.experimental_memo
 def total_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
 
     temp= all_wages(wage_bill)
 
     return temp.groupby(level = 0, axis = 1).sum()
 
+@st.experimental_memo
 def calculate_real_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
 
     cpi_head_yoy= cpi_head_yoy= gm_fred.get_fred_series(
@@ -226,6 +233,7 @@ def calculate_real_wages(wage_bill:pd.DataFrame) -> pd.DataFrame:
 
     return real_wages, real_wages_all
 
+@st.experimental_memo
 def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
     # CES0500000057    Aggregate weekly payrolls of all employees, thousands, total private, seasonally adjusted
     twb= ce_all_data.query('series_id=="CES0500000057"')
@@ -244,6 +252,7 @@ def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
 
     return twb
 
+@st.experimental_memo
 def twb_sup(ce_all_data) -> pd.DataFrame:
     all= twb_avg_weekly_num_emp(
         ce_all_data,
@@ -264,7 +273,7 @@ def twb_sup(ce_all_data) -> pd.DataFrame:
 
     sup['sup_employees']= sup['num_employees_x'] - sup['num_employees_y']
     sup['twb_sup']= sup['twb_x'] - sup['twb_y']
-    sup['avg_earn_sup']= sup['twb_sup'] / sup['sup_employees']
+    sup['avg_earn_sup']= sup['twb_sup'] / sup['sup_employees'] / 52
     sup= sup.sort_index(ascending=True)
 
     sup['num_employees_pct_change']= sup.pct_change(12)['sup_employees']
@@ -277,6 +286,7 @@ def twb_sup(ce_all_data) -> pd.DataFrame:
 
     return sup[['sup_employees', 'twb_sup', 'avg_earn_sup', 'num_employees_pct_change', 'avg_weekly_earn_pct_change', 'twb_sup_pct_change','twb_abs_change']]
 
+@st.experimental_memo
 def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.DataFrame:
     # CES0500000011 Average weekly earnings of all employees, total private, seasonally adjusted
     all_emp_earn= ce_all_data.query('series_id==@earn_code')
@@ -321,6 +331,7 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 ###      EMPLOYEES
 #############################################################
 
+@st.experimental_memo
 def employees(indy_data, indy_series) -> pd.DataFrame:
     employees= indy_data[indy_data.index.get_level_values(2) == 'S']
     # 1 is the total number of employees
