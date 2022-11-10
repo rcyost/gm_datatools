@@ -234,15 +234,9 @@ def twb_agg_weekly(ce_all_data:pd.DataFrame) -> pd.DataFrame:
     # CES0500000057    Aggregate weekly payrolls of all employees, thousands, total private, seasonally adjusted
     twb= ce_all_data.query('series_id=="CES0500000057"')
     twb['twb']= twb['value'] * 52
-    twb= twb[['year', 'period', 'value', 'twb']]
+    twb= twb[['value', 'twb']]
     twb= twb.rename({'value':'agg_week_payrolls'}, axis=1)
 
-    twb['period']= twb.period.str[1:]
-    twb['date']= twb.period +'-'+ twb.year.astype(str)
-    twb= twb[twb['period'] != '13']
-    twb['date']= pd.to_datetime(twb['date'])
-
-    twb= twb.drop(['year', 'period'], axis=1)
     twb= twb.set_index(['date'])
     twb= twb.sort_index(ascending=False)
 
@@ -295,9 +289,9 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 
     twb= pd.merge(
         left= all_emp_num,
-        left_on=['year', 'period'],
+        left_on=index,
         right=all_emp_earn,
-        right_on=['year', 'period'],
+        right_on=index,
     )
 
     twb['twb']= twb['value_x'] * twb['value_y'] * 52
@@ -306,13 +300,6 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 
     twb= twb.rename({'value_x':'num_employees', 'value_y':'avg_weekly_earn'}, axis=1)
 
-    twb['period']= twb.period.str[1:]
-    twb['date']= twb.period +'-'+ twb.year.astype(str)
-    twb= twb[twb['period'] != '13']
-    twb['date']= pd.to_datetime(twb['date'])
-
-    twb= twb.drop(['year', 'period'], axis=1)
-    twb= twb.set_index(['date'])
     twb['num_employees_pct_change']= twb.pct_change(12)['num_employees']
     twb['avg_weekly_earn_pct_change']= twb.pct_change(12)['avg_weekly_earn']
     twb['twb_pct_change']= twb.pct_change(12)['twb']
