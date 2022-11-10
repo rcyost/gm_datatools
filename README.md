@@ -16,12 +16,10 @@ Greenmantle's systematic macro python library.
 2. `pip install git+https://github.com/rcyost/gm_datatools.git`
 
 
-
 ### TO DO:
 1. tutorials
-2. load in existing code
 3. write tests
-4. 
+4. get gm chart style in gm_datatools
 
 
 ### Overview:
