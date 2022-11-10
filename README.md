@@ -19,7 +19,11 @@ Greenmantle's systematic macro python library.
 ### TO DO:
 1. tutorials
 3. write tests
+<<<<<<< HEAD
 4. get gm chart style in gm_datatools
+=======
+4. hello
+>>>>>>> d9b3b8a56b05d94fc17a30e154f48522e7e00676
 
 
 ### Overview:
