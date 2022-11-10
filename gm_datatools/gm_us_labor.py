@@ -296,7 +296,7 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 
     twb['twb']= twb['value_x'] * twb['value_y'] * 52
 
-    twb= twb[['year', 'period', 'value_x', 'value_y', 'twb']]
+    twb= twb[['value_x', 'value_y', 'twb']]
 
     twb= twb.rename({'value_x':'num_employees', 'value_y':'avg_weekly_earn'}, axis=1)
 
