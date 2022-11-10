@@ -132,6 +132,7 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
 
     indy_data= (ce_all_data
             .query('series_id.isin(@indy_series["series_id"])')
+            .reset_index(drop=False)
     )
 
     # did we get all of the needed data?
