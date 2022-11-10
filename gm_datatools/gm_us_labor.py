@@ -333,4 +333,34 @@ def employees(indy_data, indy_series) -> pd.DataFrame:
     return employees
 
 
+#############################################################
+###      JOLTS
+#############################################################
 
+def jolts_hqo() -> pd.DataFrame():
+    jolts_openings_data= download_survey_data('jt','2.JobOpenings', 'JTS000000000000000JOL')
+    jolts_openings_data= jolts_openings_data.rename({'value':'openings'}, axis=1)
+
+    jolts_data_quits= download_survey_data('jt','5.Quits', 'JTS000000000000000QUL')
+    jolts_data_quits= jolts_data_quits.rename({'value':'quits'}, axis=1)
+
+    jolts_data_hires= download_survey_data('jt','3.Hires', 'JTS000000000000000HIL')
+    jolts_data_hires= jolts_data_hires.rename({'value':'hires'}, axis=1)
+
+    jolts= pd.merge(
+        left=jolts_data_quits['quits'],
+        left_index=True,
+        right=jolts_data_hires['hires'],
+        right_index=True
+    )
+
+    jolts= pd.merge(
+        left=jolts,
+        left_index=True,
+        right=jolts_openings_data['openings'],
+        right_index=True
+    )
+
+    jolts= jolts.melt(ignore_index=False)
+
+    return jolts
