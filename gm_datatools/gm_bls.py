@@ -22,7 +22,7 @@ def download_metadata(database: str, meta:str):
 
     return df
 
-def download_survey_data(database: str, survey:str):
+def download_survey_data(database: str, survey:str, series:str= ''):
 
     survey_url= f'https://download.bls.gov/pub/time.series/{database}/{database}.data.{survey}'
     # get data and store as txt
@@ -31,6 +31,17 @@ def download_survey_data(database: str, survey:str):
     df= pd.read_csv(BytesIO(r.content), sep="\t")
     df.columns= [col.strip() for col in df.columns]
     df['series_id']= df['series_id'].str.strip()
+
+    if series is not '': df= df.query('series_id==@series')
+
+    df['period']= df.period.str[1:]
+    df['date']= df.period +'-'+ df.year.astype(str)
+    df= df[df['period'] != '13']
+    df['date']= pd.to_datetime(df['date'])
+
+    df= df.set_index('date', drop=True)
+
+    df= df[['series_id', 'value']]
 
     return df
 
