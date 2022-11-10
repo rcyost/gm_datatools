@@ -144,11 +144,6 @@ def download_ce_data() -> tuple[pd.DataFrame, pd.DataFrame]:
         right_on= 'series_id',
     )
 
-    # indy_data['period']= indy_data.period.str[1:]
-    # indy_data['date']= indy_data.period +'-'+ indy_data.year.astype(str)
-    # indy_data= indy_data[indy_data['period'] != '13']
-    # indy_data['date']= pd.to_datetime(indy_data['date'])
-
     indy_data= ((indy_data
         .pivot_table(
             index= ['date', 'industry_code', 'seasonal'],
