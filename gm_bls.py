@@ -39,6 +39,10 @@ def download_survey_data(database: str, survey:str, series:str= ''):
     df= df[df['period'] != '13']
     df['date']= pd.to_datetime(df['date'])
 
+    df= df.set_index('date', drop=True)
+
+    df= df[['series_id', 'value']]
+
     return df
 
 def databases_list(survey:str):
