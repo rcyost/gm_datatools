@@ -289,9 +289,9 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 
     twb= pd.merge(
         left= all_emp_num,
-        left_on=index,
+        left_on='index',
         right=all_emp_earn,
-        right_on=index,
+        right_on='index',
     )
 
     twb['twb']= twb['value_x'] * twb['value_y'] * 52
