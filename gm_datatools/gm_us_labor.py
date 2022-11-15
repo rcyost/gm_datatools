@@ -336,7 +336,7 @@ def employees(indy_data, indy_series) -> pd.DataFrame:
 #############################################################
 ###      JOLTS
 #############################################################
-
+@st.experimental_memo
 def jolts_hqo() -> pd.DataFrame():
     jolts_openings_data= download_survey_data('jt','2.JobOpenings', 'JTS000000000000000JOL')
     jolts_openings_data= jolts_openings_data.rename({'value':'openings'}, axis=1)
