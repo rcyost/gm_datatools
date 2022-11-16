@@ -302,7 +302,8 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 
     twb['num_employees_pct_change']= twb.pct_change(12)['num_employees']
     twb['avg_weekly_earn_pct_change']= twb.pct_change(12)['avg_weekly_earn']
-    twb['twb_pct_change']= twb.pct_change(12)['twb']
+    twb['twb_yoy_pct_change']= twb.pct_change(12)['twb']
+    twb['twb_mom_pct_change']= twb.pct_change(1)['twb']
 
     twb['twb_abs_change']= twb['twb'] - twb['twb'] .shift()
 

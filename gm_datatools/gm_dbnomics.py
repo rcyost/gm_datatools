@@ -36,7 +36,7 @@ def dataset_metadata(provider_code, dataset_code):
     return dataset_metadata[0]
 
 def get_dots(ref_area:list, counterpart_area:list, indicators:list, freq:list):
-    """_summary_
+    """https://db.nomics.world/IMF/DOT
 
     Args:
         importers (list): _description_
