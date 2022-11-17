@@ -306,6 +306,7 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
     twb['twb_mom_pct_change']= twb.pct_change(1)['twb']
 
     twb['twb_abs_change']= twb['twb'] - twb['twb'] .shift()
+    twb['avg_weekly_earn_abs_change']= twb['avg_weekly_earn'] - twb['avg_weekly_earn'] .shift()
 
     twb= twb.sort_index(ascending=False)
 
@@ -314,7 +315,6 @@ def twb_avg_weekly_num_emp(ce_all_data, earn_code:str, num_emp_code:str) -> pd.D
 #############################################################
 ###      EMPLOYEES
 #############################################################
-
 @st.experimental_memo
 def employees(indy_data, indy_series) -> pd.DataFrame:
     employees= indy_data[indy_data.index.get_level_values(2) == 'S']
